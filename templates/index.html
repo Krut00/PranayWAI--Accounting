@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LENDIQ | Bank Credit Decision</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">LEND<span>IQ</span></a>
+    <div id="sourceBadge" class="source-badge">SOURCE NOT LOADED</div>
+  </header>
+  <main>
+    <section class="command">
+      <div>
+        <p class="eyebrow">BANKER'S CREDIT WORKBENCH</p>
+        <h1>From financial statements<br>to a lending decision.</h1>
+      </div>
+      <form id="searchForm" class="search-panel">
+        <label class="company-search">Company name or symbol<input id="symbol" value="TCS" placeholder="Start typing a company name" autocomplete="off" required><div id="suggestions" class="suggestions" role="listbox" hidden></div></label>
+        <label class="amount-input">Loan requested (₹ Cr)<input id="loanAmount" type="number" min="0" max="100000" step="100" value="500"></label>
+        <div class="loan-slider"><div><span>LOAN AMOUNT</span><output id="loanOutput">₹500 Cr</output></div><input id="loanRange" type="range" min="0" max="100000" step="100" value="500" aria-label="Loan requested in crore"><div class="range-labels"><span>₹0</span><span>₹100,000 Cr</span></div></div>
+        <button type="submit">Run credit analysis <span>→</span></button>
+        <p>Financial data is fetched from Screener and reconciled cell by cell.</p>
+      </form>
+    </section>
+
+    <section id="loading" class="state">Enter a company to begin.</section>
+    <div id="dashboard" hidden>
+      <section class="decision-band">
+        <div><p class="eyebrow">BANK CREDIT DECISION</p><h2 id="companyName"></h2><a id="sourceLink" target="_blank" rel="noreferrer">View source on Screener ↗</a></div>
+        <div class="score-ring"><strong id="score"></strong><span>/ 100</span></div>
+        <div><p class="eyebrow">FINAL DECISION</p><div id="decision" class="decision"></div><p id="decisionMeta"></p></div>
+      </section>
+
+      <nav class="tabs" aria-label="Dashboard sections">
+        <button class="active" data-target="overview">Credit view</button>
+        <button data-target="review">Banker review</button>
+        <button data-target="statements">Statements</button>
+        <button data-target="audit">Source audit</button>
+      </nav>
+
+      <section id="overview" class="view active">
+        <div id="kpis" class="kpi-grid"></div>
+        <div class="grid-2">
+          <article><div class="section-title"><div><p class="eyebrow">WEIGHTED MODEL</p><h3>Credit score composition</h3></div></div><div id="scoreBars"></div></article>
+          <article><div class="section-title"><div><p class="eyebrow">ANNUAL TREND</p><h3>Profit versus cash reality</h3></div></div><div id="trendChart" class="trend-chart"></div></article>
+        </div>
+        <div class="grid-2">
+          <article><p class="eyebrow positive">TOP FACTORS</p><h3>Credit strengths</h3><ol id="strengths"></ol></article>
+          <article><p class="eyebrow danger">DUE DILIGENCE</p><h3>Material risks</h3><ol id="risks"></ol></article>
+        </div>
+        <article><div class="section-title"><div><p class="eyebrow">RATIO BOOK</p><h3>Operating, leverage, DuPont & tax analysis</h3></div></div><div id="metrics" class="metric-table"></div></article>
+      </section>
+
+      <section id="review" class="view">
+        <div class="review-heading"><div><p class="eyebrow">CREDIT OFFICER MEMO</p><h2>Insights for banker review</h2></div><p id="reviewSummary"></p></div>
+        <div id="reviewInsights" class="insight-grid"></div>
+        <div class="grid-2 review-lists">
+          <article><p class="eyebrow">SUGGESTED COVENANTS</p><h3>Loan conditions</h3><ol id="loanConditions"></ol></article>
+          <article><p class="eyebrow danger">BEFORE SANCTION</p><h3>Due diligence checklist</h3><ol id="dueDiligence"></ol></article>
+        </div>
+        <p class="review-note">Decision-support output only. Validate source documents and record independent credit judgment.</p>
+      </section>
+
+      <section id="statements" class="view"><div id="statementTables"></div></section>
+      <section id="audit" class="view">
+        <article><div class="section-title"><div><p class="eyebrow">SOURCE RECONCILIATION</p><h3>Fetched values vs Screener display</h3></div><strong id="auditSummary"></strong></div><p class="muted">Every parsed figure is compared with its exact source cell. Review the original page using the source link above.</p><div id="auditTable" class="audit-table"></div></article>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
