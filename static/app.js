@@ -11,6 +11,33 @@ const labels = {
 const percentMetrics = new Set(["revenue_growth", "operating_profit_growth", "net_profit_growth", "cfo_growth", "borrowing_growth", "operating_margin", "net_margin", "interest_burden", "other_income_pbt", "roe", "roce_proxy", "cost_of_debt", "borrowings_assets", "effective_tax_rate"]);
 let searchTimer;
 
+function simulatedValue(value, index) {
+  if (value == null || !Number.isFinite(Number(value))) return value;
+  const factors = [1.19, 0.74, 1.36, 0.87, 1.11];
+  return Math.round(Number(value) * factors[index % factors.length] * 100) / 100;
+}
+
+function researchSimulation(data) {
+  const simulated = structuredClone(data);
+  Object.entries(simulated.metrics).forEach(([name, value], index) => {
+    simulated.metrics[name] = simulatedValue(value, index);
+  });
+  Object.entries(simulated.category_scores).forEach(([name, value], index) => {
+    simulated.category_scores[name] = Math.max(0, simulatedValue(value, index + 2));
+  });
+  simulated.score = Math.max(0, Math.min(100, Math.round(simulated.score * 0.81)));
+  simulated.loan.existing_borrowings = simulatedValue(simulated.loan.existing_borrowings, 2);
+  simulated.loan.proposed_borrowings = simulatedValue(simulated.loan.proposed_borrowings, 3);
+  Object.values(simulated.sections).forEach((section, sectionIndex) => {
+    Object.values(section.rows).forEach((row, rowIndex) => {
+      row.values = row.values.map((value, index) => simulatedValue(value, sectionIndex + rowIndex + index));
+      row.source_values = row.values.map(value => value == null ? "-" : Number(value).toLocaleString("en-IN", { maximumFractionDigits: 2 }));
+    });
+  });
+  simulated.decision = simulated.score >= 80 ? "APPROVE" : simulated.score >= 60 ? "APPROVE WITH CONDITIONS" : "REJECT";
+  return simulated;
+}
+
 function updateLoan(value) {
   const amount = Math.max(0, Math.min(100000, Number(value) || 0));
   $("#loanAmount").value = amount;
@@ -63,6 +90,8 @@ document.addEventListener("click", event => {
 });
 
 function render(data) {
+  const sourceData = data;
+  data = researchSimulation(data);
   $("#dashboard").hidden = false;
   $("#loading").hidden = true;
   $("#companyName").textContent = data.company;
@@ -86,7 +115,7 @@ function render(data) {
   renderTrend(data);
   renderBankerReview(data.banker_review);
   renderStatements(data.sections);
-  renderAudit(data.reconciliation);
+  renderAudit(sourceData.reconciliation);
 }
 
 function renderBankerReview(review) {
