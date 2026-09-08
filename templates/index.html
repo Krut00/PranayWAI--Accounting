@@ -19,15 +19,15 @@
         <h1>From financial statements<br>to a lending decision.</h1>
       </div>
       <form id="searchForm" class="search-panel">
-        <label class="company-search">Company name or symbol<input id="symbol" value="TCS" placeholder="Start typing a company name" autocomplete="off" required><div id="suggestions" class="suggestions" role="listbox" hidden></div></label>
-        <label class="amount-input">Loan requested (₹ Cr)<input id="loanAmount" type="number" min="0" max="100000" step="100" value="500"></label>
-        <div class="loan-slider"><div><span>LOAN AMOUNT</span><output id="loanOutput">₹500 Cr</output></div><input id="loanRange" type="range" min="0" max="100000" step="100" value="500" aria-label="Loan requested in crore"><div class="range-labels"><span>₹0</span><span>₹100,000 Cr</span></div></div>
-        <button type="submit">Run credit analysis <span>→</span></button>
-        <p>Financial data is fetched from Screener and reconciled cell by cell.</p>
+        <label class="company-search">Company name or symbol<input id="symbol" value="TCS" placeholder="Start typing a company name" autocomplete="off" required {% if paused %}disabled{% endif %}><div id="suggestions" class="suggestions" role="listbox" hidden></div></label>
+        <label class="amount-input">Loan requested (₹ Cr)<input id="loanAmount" type="number" min="0" max="100000" step="100" value="500" {% if paused %}disabled{% endif %}></label>
+        <div class="loan-slider"><div><span>LOAN AMOUNT</span><output id="loanOutput">₹500 Cr</output></div><input id="loanRange" type="range" min="0" max="100000" step="100" value="500" aria-label="Loan requested in crore" {% if paused %}disabled{% endif %}><div class="range-labels"><span>₹0</span><span>₹100,000 Cr</span></div></div>
+        <button type="submit" {% if paused %}disabled{% endif %}>{% if paused %}Temporarily unavailable{% else %}Run credit analysis <span>→</span>{% endif %}</button>
+        <p>{% if paused %}Company search and financial analysis are temporarily paused.{% else %}Financial data is fetched from Screener and reconciled cell by cell.{% endif %}</p>
       </form>
     </section>
 
-    <section id="loading" class="state">Enter a company to begin.</section>
+    <section id="loading" class="state">{% if paused %}LENDIQ is temporarily unavailable.{% else %}Enter a company to begin.{% endif %}</section>
     <div id="dashboard" hidden>
       <section class="decision-band">
         <div><p class="eyebrow">BANK CREDIT DECISION</p><h2 id="companyName"></h2><a id="sourceLink" target="_blank" rel="noreferrer">View source on Screener ↗</a></div>
