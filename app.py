@@ -4,7 +4,7 @@ from lendiq.analysis import build_credit_analysis
 from lendiq.screener import ScreenerError, fetch_company, search_companies
 
 app = Flask(__name__)
-SCREENER_PAUSED = True
+SCREENER_PAUSED = False
 
 
 def paused_response():
