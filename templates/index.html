@@ -19,7 +19,7 @@
         <h1>From financial statements<br>to a lending decision.</h1>
       </div>
       <form id="searchForm" class="search-panel">
-        <label class="company-search">Company name or symbol<input id="symbol" value="TCS" placeholder="Start typing a company name" autocomplete="off" required {% if paused %}disabled{% endif %}><div id="suggestions" class="suggestions" role="listbox" hidden></div></label>
+        <label class="company-search">Company symbol<input id="symbol" value="TCS" placeholder="e.g. TCS" autocomplete="off" required {% if paused %}disabled{% endif %}></label>
         <label class="amount-input">Loan requested (₹ Cr)<input id="loanAmount" type="number" min="0" max="100000" step="100" value="500" {% if paused %}disabled{% endif %}></label>
         <div class="loan-slider"><div><span>LOAN AMOUNT</span><output id="loanOutput">₹500 Cr</output></div><input id="loanRange" type="range" min="0" max="100000" step="100" value="500" aria-label="Loan requested in crore" {% if paused %}disabled{% endif %}><div class="range-labels"><span>₹0</span><span>₹100,000 Cr</span></div></div>
         <button type="submit" {% if paused %}disabled{% endif %}>{% if paused %}Temporarily unavailable{% else %}Run credit analysis <span>→</span>{% endif %}</button>

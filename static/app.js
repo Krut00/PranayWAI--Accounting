@@ -9,7 +9,6 @@ const labels = {
   cost_of_debt: "Approx. cost of debt", borrowings_assets: "Borrowings / Assets", effective_tax_rate: "Effective tax rate"
 };
 const percentMetrics = new Set(["revenue_growth", "operating_profit_growth", "net_profit_growth", "cfo_growth", "borrowing_growth", "operating_margin", "net_margin", "interest_burden", "other_income_pbt", "roe", "roce_proxy", "cost_of_debt", "borrowings_assets", "effective_tax_rate"]);
-let searchTimer;
 
 function simulatedValue(value, index) {
   if (value == null || !Number.isFinite(Number(value))) return value;
@@ -45,49 +44,8 @@ function updateLoan(value) {
   $("#loanOutput").textContent = `₹${amount.toLocaleString("en-IN")} Cr`;
 }
 
-function showSuggestions(items) {
-  const menu = $("#suggestions");
-  menu.replaceChildren();
-  items.forEach(item => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.setAttribute("role", "option");
-    const name = document.createElement("strong");
-    const symbol = document.createElement("span");
-    name.textContent = item.name;
-    symbol.textContent = item.symbol;
-    button.append(name, symbol);
-    button.addEventListener("click", () => {
-      $("#symbol").value = item.symbol;
-      $("#symbol").dataset.symbol = item.symbol;
-      menu.hidden = true;
-    });
-    menu.append(button);
-  });
-  menu.hidden = items.length === 0;
-}
-
-$("#symbol").addEventListener("input", (event) => {
-  delete event.target.dataset.symbol;
-  clearTimeout(searchTimer);
-  const query = event.target.value.trim();
-  if (query.length < 2) return showSuggestions([]);
-  searchTimer = setTimeout(async () => {
-    try {
-      const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-      const items = await response.json();
-      showSuggestions(response.ok ? items : []);
-    } catch {
-      showSuggestions([]);
-    }
-  }, 250);
-});
-
 $("#loanRange").addEventListener("input", event => updateLoan(event.target.value));
 $("#loanAmount").addEventListener("input", event => updateLoan(event.target.value));
-document.addEventListener("click", event => {
-  if (!event.target.closest(".company-search")) $("#suggestions").hidden = true;
-});
 
 function render(data) {
   const sourceData = data;
